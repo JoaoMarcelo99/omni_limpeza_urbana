@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitação de Limpeza Urbana — Prefeitura Municipal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Vars ─────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark:  #1b5e20;
+    --green-mid:   #2e7d32;
+    --green-light: #43a047;
+    --green-pale:  #e8f5e9;
+    --green-line:  #c8e6c9;
+    --gold:        #f9a825;
+    --text-dark:   #1a1f1a;
+    --text-mid:    #4a5449;
+    --text-light:  #7e8d7e;
+    --bg:          #f4f6f4;
+    --white:       #ffffff;
+    --border:      #dce8dc;
+    --error:       #c62828;
+    --shadow-sm:   0 2px 8px rgba(27,94,32,.08);
+    --shadow-md:   0 8px 32px rgba(27,94,32,.12);
+    --shadow-lg:   0 20px 60px rgba(27,94,32,.18);
+    --radius:      12px;
+    --radius-sm:   8px;
+  }
+
+  /* ── Base ─────────────────────────────────────────────────────────────── */
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ───────────────────────────────────────────────────────────── */
+  .top-bar {
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    letter-spacing: .3px;
+  }
+
+  .top-bar .escudo {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    border-radius: 50% 50% 45% 45%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+
+  .top-bar .sep { opacity: .4; margin: 0 4px; }
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  .page {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    max-width: 1060px;
+    margin: 40px auto;
+    width: 100%;
+    padding: 0 20px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* ── Sidebar ──────────────────────────────────────────────────────────── */
+  .sidebar {
+    position: sticky;
+    top: 32px;
+  }
+
+  .sidebar-card {
+    background: var(--green-dark);
+    border-radius: var(--radius);
+    padding: 36px 32px;
+    color: var(--white);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .sidebar-card::before {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    background: var(--green-mid);
+    border-radius: 50%;
+    top: -80px; right: -80px;
+    opacity: .5;
+  }
+
+  .sidebar-card::after {
+    content: '';
+    position: absolute;
+    width: 180px; height: 180px;
+    background: var(--green-light);
+    border-radius: 50%;
+    bottom: -60px; left: -40px;
+    opacity: .3;
+  }
+
+  .sidebar-icon {
+    width: 56px; height: 56px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  }
+
+  .sidebar-card h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+
+  .sidebar-card .subtitle {
+    font-size: 14px;
+    opacity: .8;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+
+  .steps {
+    position: relative; z-index: 1;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: .9;
+  }
+
+  .step-num {
+    width: 22px; height: 22px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green-dark);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .sidebar-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,.15);
+    margin: 24px 0;
+    position: relative; z-index: 1;
+  }
+
+  .sidebar-note {
+    position: relative; z-index: 1;
+    font-size: 12px;
+    opacity: .65;
+    line-height: 1.5;
+  }
+
+  /* ── Form Card ────────────────────────────────────────────────────────── */
+  .form-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .form-header {
+    background: var(--green-pale);
+    border-bottom: 1px solid var(--green-line);
+    padding: 24px 36px;
+  }
+
+  .form-header h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  .form-header p {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-top: 4px;
+  }
+
+  form {
+    padding: 32px 36px;
+  }
+
+  /* ── Fieldset ─────────────────────────────────────────────────────────── */
+  .section-label {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--green-mid);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section { margin-bottom: 28px; }
+
+  .row { display: grid; gap: 16px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-cep { grid-template-columns: 160px 1fr; align-items: end; }
+
+  /* ── Fields ───────────────────────────────────────────────────────────── */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+  }
+
+  label .req {
+    color: var(--green-light);
+    margin-left: 3px;
+  }
+
+  input, textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+    width: 100%;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-light);
+    font-size: 14px;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(67,160,71,.12);
+  }
+
+  input.error, textarea.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(198,40,40,.1);
+  }
+
+  textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .field-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 2px;
+    display: none;
+  }
+
+  .field-error.show { display: block; }
+
+  /* ── CEP loader ───────────────────────────────────────────────────────── */
+  .cep-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    padding: 11px 14px;
+    background: var(--green-pale);
+    border: 1.5px solid var(--green-line);
+    border-radius: var(--radius-sm);
+    color: var(--green-dark);
+    min-height: 46px;
+    transition: all .2s;
+  }
+
+  .cep-status.empty { opacity: 0; pointer-events: none; }
+  .cep-status.loading { color: var(--text-mid); background: var(--bg); border-color: var(--border); }
+  .cep-status.found { color: var(--green-dark); }
+  .cep-status.not-found { background: #fde8e8; border-color: #ef9a9a; color: var(--error); }
+
+  .cep-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .cep-status.found .cep-dot { background: var(--green-light); }
+  .cep-status.loading .cep-dot {
+    background: var(--text-light);
+    animation: pulse 1s infinite;
+  }
+  .cep-status.not-found .cep-dot { background: var(--error); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: .3; }
+  }
+
+  /* ── Submit button ────────────────────────────────────────────────────── */
+  .submit-wrap {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  button[type="submit"] {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--green-mid);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px 28px;
+    cursor: pointer;
+    width: 100%;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(46,125,50,.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  button[type="submit"]:hover {
+    background: var(--green-dark);
+    box-shadow: 0 6px 20px rgba(46,125,50,.4);
+    transform: translateY(-1px);
+  }
+
+  button[type="submit"]:active { transform: translateY(0); }
+
+  button[type="submit"]:disabled {
+    background: var(--text-light);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-text { transition: opacity .2s; }
+  .btn-spinner {
+    display: none;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  button.loading .btn-text { opacity: 0; position: absolute; }
+  button.loading .btn-spinner { display: block; }
+
+  .privacy-note {
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* ── Loading overlay ──────────────────────────────────────────────────── */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .overlay.active { display: flex; }
+
+  .overlay-spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--green-line);
+    border-top-color: var(--green-mid);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+
+  .overlay p {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    color: var(--green-dark);
+    font-weight: 500;
+  }
+
+  /* ── Footer ───────────────────────────────────────────────────────────── */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255,255,255,.6);
+    text-align: center;
+    font-size: 12px;
+    padding: 16px;
+    margin-top: auto;
+  }
+
+  footer strong { color: rgba(255,255,255,.9); }
+
+  /* ── Responsive ───────────────────────────────────────────────────────── */
+  @media (max-width: 760px) {
+    .page {
+      grid-template-columns: 1fr;
+      margin: 20px auto;
+    }
+
+    .sidebar { position: static; }
+
+    .row-2, .row-cep { grid-template-columns: 1fr; }
+
+    form { padding: 24px 20px; }
+
+    .form-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ──────────────────────────────────────────────────────────────── -->
+<div class="top-bar">
+  <div class="escudo">🏛️</div>
+  <span>Prefeitura Municipal</span>
+  <span class="sep">|</span>
+  <span>Secretaria de Limpeza Urbana</span>
+</div>
+
+<!-- ── Main layout ──────────────────────────────────────────────────────────── -->
+<div class="page">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-icon">🧹</div>
+      <h1>Solicitação de Limpeza Urbana</h1>
+      <p class="subtitle">
+        Registre ocorrências de sujeira, entulho ou irregularidades nas vias públicas do município.
+      </p>
+
+      <ul class="steps">
+        <li>
+          <span class="step-num">1</span>
+          <span>Preencha seus dados e o CEP da rua com o problema.</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span>O sistema localiza o endereço automaticamente.</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span>Um número de protocolo é gerado imediatamente.</span>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <span>Você recebe a confirmação por e-mail com a previsão de atendimento.</span>
+        </li>
+      </ul>
+
+      <hr class="sidebar-divider">
+
+      <p class="sidebar-note">
+        O prazo de atendimento é de até <strong style="color:var(--gold)">3 dias úteis</strong> após o registro da solicitação.
+      </p>
+    </div>
+  </aside>
+
+  <!-- Form -->
+  <main>
+    <div class="form-card">
+      <div class="form-header">
+        <h2>Dados da Solicitação</h2>
+        <p>Todos os campos marcados com <span style="color:var(--green-light)">✦</span> são obrigatórios.</p>
+      </div>
+
+      <!--
+        ⚠️  IMPORTANTE: substitua a action abaixo pela URL de produção do seu webhook n8n.
+        Formato: https://SEU-N8N.com/webhook/limpeza-urbana
+        
+        O formulário usa method="POST" padrão — o browser navega direto para a
+        resposta HTML do n8n (tela de sucesso ou erro), sem JavaScript extra.
+      -->
+      <form
+        id="form-solicitacao"
+        method="POST"
+        action="https://primary-production-08dc.up.railway.app/webhook/limpeza-urbana"
+      >
+
+        <!-- Seção 1: Dados pessoais -->
+        <div class="section">
+          <div class="section-label">Seus dados</div>
+
+          <div class="row">
+            <div class="field">
+              <label for="nome">Nome completo <span class="req">✦</span></label>
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                placeholder="Ex: Maria da Silva Santos"
+                autocomplete="name"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="row row-2" style="margin-top:16px">
+            <div class="field">
+              <label for="telefone">Telefone <span class="req">✦</span></label>
+              <input
+                type="tel"
+                id="telefone"
+                name="telefone"
+                placeholder="(11) 99999-9999"
+                autocomplete="tel"
+                required
+              >
+            </div>
+            <div class="field">
+              <label for="email">E-mail <span class="req">✦</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 2: Endereço -->
+        <div class="section">
+          <div class="section-label">Local do problema</div>
+
+          <div class="row row-cep">
+            <div class="field">
+              <label for="cep">CEP da rua <span class="req">✦</span></label>
+              <input
+                type="text"
+                id="cep"
+                name="cep"
+                placeholder="00000-000"
+                maxlength="9"
+                inputmode="numeric"
+                required
+              >
+              <span class="field-error" id="cep-error">CEP inválido. Verifique e tente novamente.</span>
+            </div>
+
+            <div class="cep-status empty" id="cep-status" aria-live="polite">
+              <span class="cep-dot"></span>
+              <span id="cep-status-text"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 3: Observações -->
+        <div class="section">
+          <div class="section-label">Descrição do problema</div>
+
+          <div class="field">
+            <label for="observacoes">Observações <span class="req">✦</span></label>
+            <textarea
+              id="observacoes"
+              name="observacoes"
+              placeholder="Descreva o problema com detalhes. Ex: Há entulho acumulado na calçada há mais de 2 semanas, próximo ao número 150."
+              required
+            ></textarea>
+            <span class="field-hint">Quanto mais detalhes, melhor poderemos atender.</span>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-wrap">
+          <button type="submit" id="btn-submit">
+            <div class="btn-spinner"></div>
+            <span class="btn-text">Enviar Solicitação →</span>
+          </button>
+          <p class="privacy-note">
+            🔒 Seus dados são utilizados exclusivamente para o atendimento desta solicitação.
+          </p>
+        </div>
+
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- Loading overlay -->
+<div class="overlay" id="overlay">
+  <div class="overlay-spinner"></div>
+  <p>Registrando sua solicitação…</p>
+</div>
+
+<!-- Footer -->
+<footer>
+  <strong>Prefeitura Municipal</strong> — Secretaria de Limpeza Urbana &nbsp;·&nbsp;
+  Canal de Atendimento: 0800-XXX-XXXX
+</footer>
+
+<script>
+  /* ── CEP mask ───────────────────────────────────────────────────────────── */
+  const cepInput    = document.getElementById('cep');
+  const cepStatus   = document.getElementById('cep-status');
+  const cepStatusTx = document.getElementById('cep-status-text');
+  const cepError    = document.getElementById('cep-error');
+
+  cepInput.addEventListener('input', () => {
+    let v = cepInput.value.replace(/\D/g, '').slice(0, 8);
+    cepInput.value = v.length > 5 ? v.slice(0,5) + '-' + v.slice(5) : v;
+
+    if (v.length === 8) {
+      lookupCEP(v);
+    } else {
+      setCepStatus('empty', '');
+      cepInput.classList.remove('error');
+      cepError.classList.remove('show');
+    }
+  });
+
+  let cepTimer;
+  function lookupCEP(cep) {
+    clearTimeout(cepTimer);
+    setCepStatus('loading', 'Buscando endereço…');
+
+    cepTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`);
+        if (!res.ok) throw new Error('not found');
+        const d = await res.json();
+        const addr = `${d.street}, ${d.neighborhood} — ${d.city}/${d.state}`;
+        setCepStatus('found', addr);
+        cepInput.classList.remove('error');
+        cepError.classList.remove('show');
+      } catch {
+        setCepStatus('not-found', 'CEP não encontrado');
+        cepInput.classList.add('error');
+        cepError.classList.add('show');
+      }
+    }, 400);
+  }
+
+  function setCepStatus(state, text) {
+    cepStatus.className = 'cep-status ' + state;
+    cepStatusTx.textContent = text;
+  }
+
+  /* ── Phone mask ─────────────────────────────────────────────────────────── */
+  const telInput = document.getElementById('telefone');
+  telInput.addEventListener('input', () => {
+    let v = telInput.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length <= 2) {
+      telInput.value = v.length ? '(' + v : '';
+    } else if (v.length <= 6) {
+      telInput.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    } else if (v.length <= 10) {
+      telInput.value = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+    } else {
+      telInput.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    }
+  });
+
+  /* ── Form submit ─────────────────────────────────────────────────────────── */
+  const form   = document.getElementById('form-solicitacao');
+  const btn    = document.getElementById('btn-submit');
+  const overlay = document.getElementById('overlay');
+
+  form.addEventListener('submit', (e) => {
+    // Validação extra: CEP deve estar com 9 chars (XXXXX-XXX)
+    const rawCep = cepInput.value.replace(/\D/g, '');
+    if (rawCep.length !== 8) {
+      e.preventDefault();
+      cepInput.classList.add('error');
+      cepError.classList.add('show');
+      cepInput.focus();
+      return;
+    }
+
+    // Se CEP foi marcado como não encontrado pela busca prévia, bloqueia
+    if (cepStatus.classList.contains('not-found')) {
+      e.preventDefault();
+      cepInput.focus();
+      return;
+    }
+
+    // Mostra loading — o browser vai navegar para a resposta do webhook
+    btn.classList.add('loading');
+    btn.disabled = true;
+    overlay.classList.add('active');
+  });
+</script>
+</body>
+</html>
